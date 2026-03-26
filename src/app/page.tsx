@@ -13,6 +13,8 @@ export default function Home() {
   const [photosLoading, setPhotosLoading] = useState(false);
   const [photosError, setPhotosError] = useState<string | null>(null);
 
+  const [activePhoto, setActivePhoto] = useState<Photo | null>(null);
+
   useEffect(() => {
     fetchAlbums()
       .then(setAlbums)
@@ -119,7 +121,11 @@ export default function Home() {
 
               {/* Fotos reales */}
               {!photosLoading && photos.map((photo) => (
-                <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                <button
+                  key={photo.id}
+                  onClick={() => setActivePhoto(photo)}
+                  className="group relative aspect-square overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 cursor-pointer"
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={photo.thumbnailUrl}
@@ -130,12 +136,42 @@ export default function Home() {
                     <span className="text-xs font-semibold text-white/70">#{photo.id}</span>
                     <span className="text-xs text-white leading-snug line-clamp-2">{photo.title}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
         </section>
       </main>
+
+      {/* Lightbox */}
+      {activePhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setActivePhoto(null)}
+        >
+          <div
+            className="relative max-w-lg w-full rounded-lg overflow-hidden bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activePhoto.url}
+              alt={activePhoto.title}
+              className="w-full object-contain"
+            />
+            <div className="p-4">
+              <span className="text-xs font-semibold text-zinc-400">#{activePhoto.id}</span>
+              <p className="mt-1 text-sm text-zinc-800">{activePhoto.title}</p>
+            </div>
+            <button
+              onClick={() => setActivePhoto(null)}
+              className="absolute top-2 right-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white hover:bg-black/70"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
