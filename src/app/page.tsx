@@ -119,13 +119,17 @@ export default function Home() {
 
               {/* Fotos reales */}
               {!photosLoading && photos.map((photo) => (
-                <div key={photo.id} className="aspect-square overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={photo.thumbnailUrl}
                     alt={photo.title}
                     className="h-full w-full object-cover"
                   />
+                  <div className="absolute inset-0 flex flex-col justify-end bg-black/60 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <span className="text-xs font-semibold text-white/70">#{photo.id}</span>
+                    <span className="text-xs text-white leading-snug line-clamp-2">{photo.title}</span>
+                  </div>
                 </div>
               ))}
             </div>

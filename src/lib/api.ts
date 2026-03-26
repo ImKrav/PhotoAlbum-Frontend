@@ -33,7 +33,11 @@ export async function fetchPhotosByAlbum(albumId: number): Promise<Photo[]> {
     params: { albumId },
   });
 
-  return data;
+  return data.map((photo) => ({
+    ...photo,
+    thumbnailUrl: `https://picsum.photos/seed/${photo.id}/150/150`,
+    url: `https://picsum.photos/seed/${photo.id}/600/600`,
+  }));
 }
 
 export async function fetchAllPhotos(): Promise<Photo[]> {
