@@ -1,41 +1,32 @@
-import axios from "axios";
-
-const apiClient = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export interface Album {
+export type Album = {
   id: number;
   title: string;
-}
+};
 
-export interface Photo {
+export type Photo = {
   albumId: number;
   id: number;
   title: string;
   url: string;
   thumbnailUrl: string;
-}
+};
+
+const API_BASE_URL = "/api";
 
 export async function fetchAlbums(): Promise<Album[]> {
-  const { data } = await apiClient.get<
-    { userId: number; id: number; title: string }[]
-  >("/albums");
+  const response = await fetch(`${API_BASE_URL}/albums`);
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar los albumes");
+  }
 
-  return data.map(({ id, title }) => ({ id, title }));
+  return response.json();
 }
 
 export async function fetchPhotosByAlbum(albumId: number): Promise<Photo[]> {
-  const { data } = await apiClient.get<Photo[]>("/photos", {
-    params: { albumId },
-  });
+  const response = await fetch(`${API_BASE_URL}/photos?albumId=${albumId}`);
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar las fotos");
+  }
 
-  return data.map((photo) => ({
-    ...photo,
-    thumbnailUrl: `https://picsum.photos/seed/${photo.id}/150/150`,
-    url: `https://picsum.photos/seed/${photo.id}/600/600`,
-  }));
+  return response.json();
 }
