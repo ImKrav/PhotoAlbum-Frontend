@@ -11,7 +11,11 @@ export type Photo = {
   thumbnailUrl: string;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("La variable de entorno NEXT_PUBLIC_API_URL no está definida. Por favor, configúrala en el archivo .env");
+}
 
 export async function fetchAlbums(): Promise<Album[]> {
   const response = await fetch(`${API_BASE_URL}/albums`);
